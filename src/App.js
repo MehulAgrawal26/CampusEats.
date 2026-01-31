@@ -325,7 +325,7 @@ function App() {
                  <BarChart data={cravingsBarData} layout="vertical"><CartesianGrid strokeDasharray="3 3" stroke="#333" /><XAxis type="number" stroke="#666" /><YAxis dataKey="name" type="category" width={80} stroke="#fff" /><Tooltip contentStyle={{backgroundColor: '#111', border: '1px solid #333'}} /><Bar dataKey="count" fill="#10b981" barSize={30} radius={[0, 10, 10, 0]} /></BarChart>
                </ResponsiveContainer>
              </div>
-             <div style={{background: "var(--bg-card)", padding: "20px", borderRadius: "12px", border: "1px solid var(--border)", minHeight: "350px"}}><h3 style={{color: "white", marginTop: 0}}>Spending by Canteen</h3><ResponsiveContainer width="100%" height={300}><PieChart><Pie data={canteenData} cx="50%" cy="50%" innerRadius={60} outerRadius={100} paddingAngle={5} dataKey="value" label={{ fill: 'white', fontSize: 12 }}>{canteenData.map((entry, index) => <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />)}</Pie><Tooltip contentStyle={{backgroundColor: '#111', border: '1px solid #333'}} /><Legend /></PieChart></ResponsiveContainer></div>
+             <div style={{background: "var(--bg-card)", padding: "20px", borderRadius: "12px", border: "1px solid var(--border)", minHeight: "350px"}}><h3 style={{color: "white", marginTop: 0}}>Spending by Canteen</h3><ResponsiveContainer width="100%" height={300}><PieChart><Pie data={canteenData} cx="50%" cy="50%" innerRadius={60} outerRadius={100} paddingAngle={5} dataKey="value" label={{ fill: 'white', fontSize: 12 }}>{canteenData.map((entry, index) => <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />)}</Pie><Tooltip contentStyle={{backgroundColor: '#111', border: '1px solid #333', color: 'white'}} /><Legend /></PieChart></ResponsiveContainer></div>
              <div style={{background: "var(--bg-card)", padding: "20px", borderRadius: "12px", border: "1px solid var(--border)", minHeight: "350px"}}><h3 style={{color: "white", marginTop: 0}}>Meal Times</h3><ResponsiveContainer width="100%" height={300}><BarChart data={mealData}><CartesianGrid strokeDasharray="3 3" stroke="#333" /><XAxis dataKey="name" stroke="#666" /><YAxis stroke="#666" /><Tooltip contentStyle={{backgroundColor: '#111', border: '1px solid #333'}} /><Bar dataKey="orders" fill="#AF19FF" radius={[10, 10, 0, 0]} /></BarChart></ResponsiveContainer></div>
             </>
           )}
@@ -380,17 +380,52 @@ function App() {
 
   if (!user) {
     return (
-      <div style={{minHeight: "100vh", display: "flex", justifyContent: "center", alignItems: "center", background: "var(--bg-body)", padding: 20}}>
-        <div style={{background: "var(--bg-card)", padding: "40px", width: "100%", maxWidth: "350px", border: "1px solid var(--border)", borderRadius: "16px"}}>
-          <h2 style={{marginTop: 0, marginBottom: "20px", color: "white", textAlign:"center"}}>{isRegistering ? "Create Account" : "Sign In"}</h2>
-          <form onSubmit={isRegistering ? handleSignup : handleLogin}>
-            {isRegistering && <><input type="text" placeholder="Full Name" onChange={e=>setFullName(e.target.value)} required /><input type="text" placeholder="College ID" onChange={e=>setCollegeId(e.target.value)} required /></>}
-            <input type="email" placeholder="Email" onChange={e=>setEmail(e.target.value)} required />
-            <input type="password" placeholder="Password" onChange={e=>setPassword(e.target.value)} required />
-            {isRegistering && <input type="password" placeholder="Confirm Password" onChange={e=>setConfirmPass(e.target.value)} required />}
-            <button type="submit" className="btn btn-primary" style={{width: "100%", marginTop: "10px"}}>{isRegistering ? "Join (Get ₹5000)" : "Enter"}</button>
-          </form>
-          <button onClick={()=>setIsRegistering(!isRegistering)} className="btn btn-secondary" style={{width: "100%", marginTop: "10px"}}>{isRegistering ? "Back to Login" : "Register"}</button>
+      <div className="login-page">
+        <div className="login-container">
+          <div className="login-content">
+            {/* Branding */}
+            <div className="login-header">
+              <h1 className="login-logo">CAMPUSEATS</h1>
+              <p className="login-tagline">{isRegistering ? "Join our community" : "Order from your campus canteen"}</p>
+            </div>
+
+            {/* Form */}
+            <form onSubmit={isRegistering ? handleSignup : handleLogin} className="login-form">
+              {isRegistering && (
+                <>
+                  <div className="form-group">
+                    <label>Full Name</label>
+                    <input type="text" placeholder="Aayush" onChange={e=>setFullName(e.target.value)} required className="form-input" />
+                  </div>
+                  <div className="form-group">
+                    <label>College ID</label>
+                    <input type="text" placeholder="Enroll number" onChange={e=>setCollegeId(e.target.value)} required className="form-input" />
+                  </div>
+                </>
+              )}
+              <div className="form-group">
+                <label>Email Address</label>
+                <input type="email" placeholder="name@iitr.ac.in" onChange={e=>setEmail(e.target.value)} required className="form-input" />
+              </div>
+              <div className="form-group">
+                <label>Password</label>
+                <input type="password" placeholder="••••••••" onChange={e=>setPassword(e.target.value)} required className="form-input" />
+              </div>
+              {isRegistering && (
+                <div className="form-group">
+                  <label>Confirm Password</label>
+                  <input type="password" placeholder="••••••••" onChange={e=>setConfirmPass(e.target.value)} required className="form-input" />
+                </div>
+              )}
+              <button type="submit" className="btn btn-primary btn-lg" style={{width: "100%"}}>{isRegistering ? "Create Account" : "Sign In"}</button>
+            </form>
+
+            {/* Toggle Auth Mode */}
+            <div className="auth-toggle">
+              <p>{isRegistering ? "Already have an account?" : "Don't have an account?"}</p>
+              <button onClick={()=>setIsRegistering(!isRegistering)} className="auth-link">{isRegistering ? "Sign In" : "Register Now"}</button>
+            </div>
+          </div>
         </div>
         {toast.show && <div className="toast-container"><div className={`toast toast-${toast.type}`}>{toast.type === "error" ? "" : ""} {toast.message}</div></div>}
       </div>
@@ -455,7 +490,6 @@ function App() {
                     <button onClick={() => setSelectedCanteenId(null)} style={{position: "absolute", top: "20px", left: "20px", background: "rgba(0,0,0,0.5)", color: "white", border: "1px solid rgba(255,255,255,0.2)", padding: "8px 16px", borderRadius: "30px", cursor: "pointer", backdropFilter: "blur(5px)"}}>← Back</button>
                     <h1 style={{fontSize: "48px", margin: 0, color: "white"}}>{liveSelectedCanteen.name}</h1>
                     <p style={{color: "#ccc", fontSize: "18px", marginTop: "5px"}}>Full Menu & Beverages</p>
-                    <div style={{marginTop: "20px", background: "rgba(0,0,0,0.6)", padding: "10px 20px", borderRadius: "30px", border: "1px solid #f59e0b", color: "#f59e0b", fontWeight: "bold", display: "inline-block", backdropFilter: "blur(5px)"}}>⏳ Current Wait Time: ~{waitTime} mins</div>
                   </div>
                   
                   {liveSelectedCanteen.isOpen === false && <div style={{background: "#ef4444", color: "white", padding: "20px", borderRadius: "8px", textAlign: "center", marginBottom: "30px", fontSize: "20px", fontWeight: "bold"}}>⛔ Shop has just closed. Ordering is paused.</div>}
@@ -536,7 +570,7 @@ function App() {
                                     <span onClick={() => toggleItemAvailability(item)} style={{padding: "8px 12px", color: isAvailable ? "#10b981" : "#888", cursor: "pointer", fontSize: "13px"}}>
                                         {isAvailable ? "🟢" : "⚫"} {item.name}
                                     </span>
-                                    <span onClick={() => deleteItem(item)} style={{cursor: "pointer", marginLeft: "5px", fontSize: "12px"}}>🗑️</span>
+                                    <span onClick={() => deleteItem(item)} style={{cursor: "pointer", marginLeft: "5px", fontSize: "12px"}}>❌</span>
                                 </div>
                             );
                         })}
@@ -544,8 +578,8 @@ function App() {
                   </div>
                   <h4 style={{color: "#888", marginTop: "20px"}}>Add New Item to Menu</h4>
                   <form onSubmit={addNewItem} style={{display: "grid", gridTemplateColumns: "1fr 1fr auto", gap: "15px", alignItems: "end"}}>
-                    <div><label style={{color: "#888", fontSize: "12px"}}>Item Name *</label><input required placeholder="e.g. Cheese Burger" value={newItemName} onChange={e=>setNewItemName(e.target.value)} style={{marginBottom:0}} /></div>
-                    <div><label style={{color: "#888", fontSize: "12px"}}>Price (₹) *</label><input required placeholder="e.g. 50" type="number" value={newItemPrice} onChange={e=>setNewItemPrice(e.target.value)} style={{marginBottom:0}} /></div>
+                    <div><label style={{color: "#888", fontSize: "12px", color:"white"}}>Item Name: </label><input required placeholder=" e.g. Cheese Burger" value={newItemName} onChange={e=>setNewItemName(e.target.value)} style={{marginBottom:0, backgroundColor: "var(--bg-card)", border: "1px solid var(--border)", borderRadius: "8px", padding: "10px", color: "white"}} /></div>
+                    <div><label style={{color: "#888", fontSize: "12px", marginLeft: "-150px", color:"white"}}>Price (₹) </label><input required placeholder=" e.g. 50" type="number" value={newItemPrice} onChange={e=>setNewItemPrice(e.target.value)} style={{marginBottom:0, backgroundColor: "var(--bg-card)", border: "1px solid var(--border)", borderRadius: "8px", padding: "10px", marginLeft: "10px", color: "white"}} /></div>
                     <button type="submit" className="btn btn-primary" style={{height: "46px"}}>+ Add Item</button>
                   </form>
                 </div>
