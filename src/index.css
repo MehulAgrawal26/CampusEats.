@@ -42,13 +42,13 @@ body {
 .hero p { color: #888; font-size: 18px; margin-top: 10px; }
 
 /* --- GRID SYSTEM --- */
-.main-grid { display: grid; grid-template-columns: 1fr 350px; gap: 30px; align-items: start; }
+.main-grid { display: grid; grid-template-columns: 1fr 320px; gap: 30px; align-items: start; }
 
-/* Desktop Grid */
 .menu-grid { 
   display: grid; 
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); 
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); 
   gap: 20px; 
+  justify-content: center;
 }
 
 /* --- CARDS --- */
@@ -68,7 +68,22 @@ body {
 .food-card h3 { margin: 0 0 10px 0; font-size: 18px; color: white; }
 .price-tag { font-size: 18px; font-weight: bold; color: var(--accent); display: block; margin-bottom: 15px; }
 
-/* --- HISTORY CARD LAYOUT --- */
+/* --- CART PANEL (Restored) --- */
+.cart-panel {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  padding: 25px;
+  border-radius: 16px;
+  position: sticky;
+  top: 85px; /* Sticks below navbar */
+  height: fit-content;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+}
+.cart-panel h3 { margin-top: 0; border-bottom: 1px solid #333; padding-bottom: 15px; margin-bottom: 15px; color: white; }
+.cart-panel ul { list-style: none; padding: 0; margin: 0 0 20px 0; max-height: 300px; overflow-y: auto; }
+.cart-panel li { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #222; color: #ccc; }
+
+/* --- HISTORY CARD --- */
 .history-card {
   background: var(--bg-card);
   padding: 20px;
@@ -77,6 +92,9 @@ body {
   position: relative;
   overflow: hidden;
   margin-bottom: 20px;
+  min-height: 200px; /* Ensure consistent height for buttons */
+  display: flex;
+  flex-direction: column;
 }
 .token-watermark {
   position: absolute;
@@ -87,62 +105,65 @@ body {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-top: 15px;
+  margin-top: auto; /* Pushes footer to bottom */
   gap: 15px;
+  padding-top: 15px;
 }
 
-/* --- DYNAMIC PROGRESS BAR --- */
+/* --- PROGRESS BAR --- */
 .progress-track {
-  flex-grow: 1; /* Fills space between Price and Status */
-  height: 6px;
-  background: #333;
+  flex-grow: 1;
+  height: 8px;
+  background: #222;
   border-radius: 10px;
   overflow: hidden;
   position: relative;
 }
 .progress-fill {
   height: 100%;
-  background: var(--primary);
+  background: linear-gradient(90deg, var(--primary), var(--accent));
   border-radius: 10px;
-  transition: width 1s linear; /* Smooth fill */
-}
-.progress-fill.completed { background: var(--accent); box-shadow: 0 0 10px var(--accent); }
-
-/* --- MOBILE OPTIMIZATION (< 600px) --- */
-@media (max-width: 600px) {
-  .main-grid { grid-template-columns: 1fr; }
-  .cart-panel { display: none; }
-  
-  /* STRICT CENTERING FOR MOBILE */
-  .menu-grid { 
-    display: flex; 
-    flex-direction: column; 
-    align-items: center; 
-    gap: 20px;
-  }
-  .food-card { 
-    width: 100%; 
-    max-width: 340px; /* Limits card width */
-  }
-  
-  .hero h1 { font-size: 28px; }
-  .navbar { padding: 15px; }
-  .logo { font-size: 20px; }
+  transition: width 1s linear; /* Smooth Gliding */
 }
 
-/* --- UTILS --- */
-.btn { border: none; padding: 10px 20px; border-radius: 8px; font-weight: 600; cursor: pointer; transition: 0.2s; }
+/* --- BUTTONS & BADGES --- */
+.btn { border: none; padding: 10px 20px; border-radius: 8px; font-weight: 600; cursor: pointer; transition: 0.2s; display: flex; align-items: center; justify-content: center; }
 .btn-primary { background: var(--primary); color: white; }
 .btn-secondary { background: #333; color: white; }
 .btn-danger { background: rgba(239, 68, 68, 0.2); color: #ef4444; border: 1px solid #ef4444; }
 
-.status-badge { padding: 5px 12px; border-radius: 20px; font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; }
+/* Centered Status Badges */
+.status-badge { 
+  padding: 6px 14px; 
+  border-radius: 20px; 
+  font-size: 11px; 
+  font-weight: 800; 
+  text-transform: uppercase; 
+  letter-spacing: 0.5px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 80px;
+}
 .status-pending { background: #333; color: #aaa; }
 .status-preparing { background: rgba(59, 130, 246, 0.2); color: #60a5fa; border: 1px solid #1e3a8a; }
 .status-ready { background: var(--accent); color: black; box-shadow: 0 0 15px rgba(16, 185, 129, 0.4); animation: pulse 2s infinite; }
 .status-rejected { background: var(--danger); color: white; }
 
 @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.4); } 70% { box-shadow: 0 0 0 10px rgba(16, 185, 129, 0); } 100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); } }
+
+/* --- MOBILE OPTIMIZATION --- */
+@media (max-width: 768px) {
+  .main-grid { grid-template-columns: 1fr; }
+  .cart-panel { display: none; }
+  
+  .menu-grid { display: flex; flex-direction: column; align-items: center; width: 100%; padding: 0 10px; box-sizing: border-box; }
+  .food-card { width: 100%; max-width: 360px; margin: 0 auto; }
+  
+  .hero h1 { font-size: 28px; }
+  .navbar { padding: 15px; }
+  .logo { font-size: 20px; }
+}
 
 /* --- TOASTS --- */
 .toast-container { position: fixed; bottom: 80px; right: 20px; z-index: 9999; width: 90%; max-width: 400px; pointer-events: none; }

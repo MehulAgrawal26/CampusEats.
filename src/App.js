@@ -462,14 +462,14 @@ function App() {
 
                   <div className="main-grid">
                     <div style={{opacity: liveSelectedCanteen.isOpen === false ? 0.5 : 1, pointerEvents: liveSelectedCanteen.isOpen === false ? "none" : "auto"}}>
-                      <input type="text" placeholder="Search for food..." value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} style={{ marginBottom: "30px", background: "transparent", border: "none", borderBottom: "1px solid #333", borderRadius: 0, paddingLeft: 0, fontSize: "20px" }} />
+                      <input type="text" placeholder="Search for food..." value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} style={{ marginBottom: "30px", paddingRight:"44vw", background: "#141414", borderRadius: "10px", paddingLeft: "3px", fontSize: "20px", paddingTop: "10px", paddingBottom: "10px" }} />
                       <div className="menu-grid">
                         {liveSelectedCanteen.menu && liveSelectedCanteen.menu.filter(item => item.name.toLowerCase().includes(searchTerm.toLowerCase())).sort((a, b) => { const aTrend = topSellingItems.includes(a.name); const bTrend = topSellingItems.includes(b.name); if (aTrend && !bTrend) return -1; if (!aTrend && bTrend) return 1; return 0; }).map((item, idx) => {
                             const isAvailable = item.available !== false;
                             const isTrending = topSellingItems.includes(item.name);
                             return (
                               <div key={idx} className="food-card" style={{opacity: isAvailable ? 1 : 0.5, border: isTrending ? "1px solid #FFBB28" : "1px solid #333", position: "relative"}}>
-                                {isTrending && <div style={{position: "absolute", top: "-10px", right: "-10px", background: "#FFBB28", color: "black", padding: "5px 10px", borderRadius: "20px", fontWeight: "bold", fontSize: "12px", boxShadow: "0 5px 15px rgba(255,187,40,0.4)"}}>🔥 Trending</div>}
+                                {isTrending && <div style={{position: "absolute", top: "5px", right: "5px", background: "#FFBB28", color: "black", padding: "5px 10px", borderRadius: "20px", fontWeight: "bold", fontSize: "12px", boxShadow: "0 5px 15px rgba(255,187,40,0.4)"}}>🔥 Trending</div>}
                                 <div style={{flex: 1, display: "flex", alignItems: "center", justifyContent: "center"}}><h3>{item.name}</h3></div>
                                 <div style={{width: "100%"}}><span className="price-tag">₹{item.price}</span><button disabled={!isAvailable} onClick={() => setCart([...cart, item])} className="btn btn-primary" style={{width: "100%", background: isAvailable ? "var(--primary)" : "#555", cursor: isAvailable ? "pointer" : "not-allowed"}}>{isAvailable ? "Add to Cart" : "Sold Out"}</button></div>
                               </div>
