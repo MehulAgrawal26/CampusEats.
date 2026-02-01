@@ -21,7 +21,6 @@ body {
 .fade-in { animation: fadeIn 0.4s ease-out; }
 @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-/* --- NAVBAR --- */
 .navbar {
   background: rgba(5, 5, 5, 0.9);
   backdrop-filter: blur(10px);
@@ -36,12 +35,10 @@ body {
 }
 .logo { font-size: 24px; font-weight: 800; letter-spacing: -1px; color: white; }
 
-/* --- HERO --- */
 .hero { padding: 40px 0; margin-bottom: 20px; text-align: center; }
 .hero h1 { font-size: 42px; margin: 0; background: linear-gradient(to right, #fff, #888); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
 .hero p { color: #888; font-size: 18px; margin-top: 10px; }
 
-/* --- GRID SYSTEM --- */
 .main-grid { display: grid; grid-template-columns: 1fr 320px; gap: 30px; align-items: start; }
 
 .menu-grid { 
@@ -51,7 +48,6 @@ body {
   justify-content: center;
 }
 
-/* --- CARDS --- */
 .food-card {
   background: var(--bg-card);
   border: 1px solid var(--border);
@@ -68,14 +64,13 @@ body {
 .food-card h3 { margin: 0 0 10px 0; font-size: 18px; color: white; }
 .price-tag { font-size: 18px; font-weight: bold; color: var(--accent); display: block; margin-bottom: 15px; }
 
-/* --- CART PANEL (Restored) --- */
 .cart-panel {
   background: var(--bg-card);
   border: 1px solid var(--border);
   padding: 25px;
   border-radius: 16px;
   position: sticky;
-  top: 85px; /* Sticks below navbar */
+  top: 85px; 
   height: fit-content;
   box-shadow: 0 10px 30px rgba(0,0,0,0.3);
 }
@@ -83,7 +78,6 @@ body {
 .cart-panel ul { list-style: none; padding: 0; margin: 0 0 20px 0; max-height: 300px; overflow-y: auto; }
 .cart-panel li { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #222; color: #ccc; }
 
-/* --- HISTORY CARD --- */
 .history-card {
   background: var(--bg-card);
   padding: 20px;
@@ -92,7 +86,7 @@ body {
   position: relative;
   overflow: hidden;
   margin-bottom: 20px;
-  min-height: 200px; /* Ensure consistent height for buttons */
+  min-height: 200px; 
   display: flex;
   flex-direction: column;
 }
@@ -105,12 +99,11 @@ body {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-top: auto; /* Pushes footer to bottom */
+  margin-top: auto;
   gap: 15px;
   padding-top: 15px;
 }
 
-/* --- PROGRESS BAR --- */
 .progress-track {
   flex-grow: 1;
   height: 8px;
@@ -123,16 +116,15 @@ body {
   height: 100%;
   background: linear-gradient(90deg, var(--primary), var(--accent));
   border-radius: 10px;
-  transition: width 1s linear; /* Smooth Gliding */
+  transition: width 1s linear; 
 }
 
-/* --- BUTTONS & BADGES --- */
 .btn { border: none; padding: 10px 20px; border-radius: 8px; font-weight: 600; cursor: pointer; transition: 0.2s; display: flex; align-items: center; justify-content: center; }
 .btn-primary { background: var(--primary); color: white; }
 .btn-secondary { background: #333; color: white; }
 .btn-danger { background: rgba(239, 68, 68, 0.2); color: #ef4444; border: 1px solid #ef4444; }
 
-/* Centered Status Badges */
+
 .status-badge { 
   padding: 6px 14px; 
   border-radius: 20px; 
@@ -152,7 +144,6 @@ body {
 
 @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.4); } 70% { box-shadow: 0 0 0 10px rgba(16, 185, 129, 0); } 100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); } }
 
-/* --- MOBILE OPTIMIZATION --- */
 @media (max-width: 768px) {
   .main-grid { grid-template-columns: 1fr; }
   .cart-panel { display: none; }
@@ -165,7 +156,6 @@ body {
   .logo { font-size: 20px; }
 }
 
-/* --- LOGIN PAGE --- */
 .login-page {
   min-height: 100vh;
   display: flex;
@@ -311,7 +301,6 @@ body {
   }
 }
 
-/* --- TOASTS --- */
 .toast-container { position: fixed; bottom: 80px; right: 20px; z-index: 9999; width: 90%; max-width: 400px; pointer-events: none; }
 .toast { pointer-events: auto; background: rgba(20,20,20,0.95); backdrop-filter: blur(10px); color: white; padding: 15px 20px; border-radius: 8px; margin-top: 10px; font-weight: 600; box-shadow: 0 10px 30px rgba(0,0,0,0.5); display: flex; align-items: center; gap: 12px; border: 1px solid var(--border); animation: slideIn 0.3s; }
 .toast-success { border-left: 4px solid var(--accent); }

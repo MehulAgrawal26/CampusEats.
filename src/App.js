@@ -6,7 +6,6 @@ import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContaine
 import './index.css';
 
 function App() {
-  // --- STATE VARIABLES ---
   const [user, setUser] = useState(null); 
   const [userData, setUserData] = useState(null); 
   const [userMode, setUserMode] = useState("student"); 
@@ -18,7 +17,6 @@ function App() {
   const [orders, setOrders] = useState([]); 
   const [currentView, setCurrentView] = useState("home"); 
 
-  // Auth
   const [isRegistering, setIsRegistering] = useState(false); 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -28,20 +26,17 @@ function App() {
 
   const [toast, setToast] = useState({ show: false, message: "", type: "" });
 
-  // Shopkeeper
   const [showAddForm, setShowAddForm] = useState(false);
   const [newItemName, setNewItemName] = useState("");
   const [newItemPrice, setNewItemPrice] = useState("");
   const [newItemImage, setNewItemImage] = useState("");
   const [menuSearchTerm, setMenuSearchTerm] = useState("");
   
-  // Student
   const [searchTerm, setSearchTerm] = useState("");
   const [specialRequest, setSpecialRequest] = useState(""); 
   const [topSellingItems, setTopSellingItems] = useState([]);
   const [waitTime, setWaitTime] = useState(0); 
   
-  // Mobile Cart
   const [showMobileCart, setShowMobileCart] = useState(false);
 
   const prevOrdersRef = useRef({}); 
@@ -49,13 +44,11 @@ function App() {
   const DEFAULT_IMG = "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=500&q=60";
   const CANTEEN_IMG = "https://images.unsplash.com/photo-1554118811-1e0d58224f24?auto=format&fit=crop&w=1600&q=80"; 
 
-  // --- HELPER: SHOW TOAST ---
   const showToast = (message, type = "error") => {
     setToast({ show: true, message, type });
     setTimeout(() => { setToast({ show: false, message: "", type: "" }); }, 7000); 
   };
 
-  // --- 1. AUTH & WALLET LISTENER ---
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged(async (u) => {
       if (u) {
@@ -83,7 +76,6 @@ function App() {
     return () => unsubscribe();
   }, []);
 
-  // --- 2. CANTEEN LISTENER ---
   useEffect(() => {
     const unsub = onSnapshot(collection(db, "canteens"), (snapshot) => {
         setCanteens(snapshot.docs.map(d => ({ id: d.id, ...d.data() })));
@@ -91,7 +83,6 @@ function App() {
     return () => unsub();
   }, []);
 
-  // --- 3. ORDERS LISTENER (WITH SMART NOTIFICATIONS) ---
   useEffect(() => {
     const q = collection(db, "orders"); 
     const unsub = onSnapshot(q, (snapshot) => {
@@ -107,7 +98,6 @@ function App() {
       myOrders.sort((a,b) => (b.timestamp?.seconds || 0) - (a.timestamp?.seconds || 0));
       setOrders(myOrders);
 
-      // --- REAL-TIME NOTIFICATION LOGIC ---
       if (userMode === "student") {
           myOrders.forEach(order => {
               const oldStatus = prevOrdersRef.current[order.id];
@@ -126,7 +116,6 @@ function App() {
           });
       }
 
-      // Stats Logic
       const itemCounts = {};
       allOrders.forEach(o => {
           o.items.forEach(i => { itemCounts[i.name] = (itemCounts[i.name] || 0) + 1; });
@@ -140,7 +129,6 @@ function App() {
     return () => unsub();
   }, [user, userMode]);
 
-  // --- ACTIONS ---
   const handleLogin = async (e) => { 
     e.preventDefault(); 
     try { await signInWithEmailAndPassword(auth, email, password); } catch (err) { showToast("Invalid Email or Password.", "error"); } 
@@ -157,7 +145,7 @@ function App() {
   };
 
   const placeOrder = async () => {
-    // Check Shop Status
+
     const liveCanteen = canteens.find(c => c.id === selectedCanteenId);
     if (selectedCanteenId && (!liveCanteen || liveCanteen.isOpen === false)) {
         return showToast("⚠️ Shop just closed! Cannot place order.", "error");
@@ -173,7 +161,6 @@ function App() {
     }
 
     const tokenId = Math.floor(1000 + Math.random() * 9000); 
-    // Calculate ETA
     const estimatedTime = waitTime > 0 ? waitTime : 5; 
     const studentLabel = userData.fullName ? `${userData.fullName} (${userData.collegeId})` : user.email;
 
@@ -247,11 +234,9 @@ function App() {
   const handleLogout = () => { signOut(auth); setCart([]); setSelectedCanteenId(null); };
   const goHome = () => { setCurrentView("home"); setSelectedCanteenId(null); };
 
-  // --- GET ACTIVE ORDER (For Persistent Banner) ---
   const activeOrder = orders.find(o => o.status === 'pending' || o.status === 'preparing');
   const liveSelectedCanteen = canteens.find(c => c.id === selectedCanteenId);
 
-  // --- FULL ANALYTICS ENGINE (Restored) ---
   const processStats = () => {
     const dailyData = {}; const itemCounts = {}; const canteenSpending = {}; const dailyItemBreakdown = {}; const hourlyTraffic = {}; const customerSpending = {};
     const categoryData = { "Fast Food": 0, "Meals": 0, "Drinks": 0, "Snacks": 0 };
@@ -292,7 +277,6 @@ function App() {
     return { totalSpent, chartData, topItems, canteenData, stackData, topItemNames, avgOrderValue, peakHourData, cravingsBarData, mealData, loyaltyData, avgWaitTime, rejectedCount };
   };
 
-  // --- RESTORED RICH STATS VIEW ---
   const StatsView = () => {
     const { totalSpent, chartData, topItems, canteenData, stackData, topItemNames, avgOrderValue, peakHourData, cravingsBarData, mealData, loyaltyData, avgWaitTime, rejectedCount } = processStats();
     const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#AF19FF', '#FF5733'];
@@ -301,7 +285,7 @@ function App() {
       <div className="container fade-in">
         <div className="hero"><h1>{userMode === "shopkeeper" ? "Business Intelligence" : "Consumption Analytics"}</h1></div>
         
-        {/* METRICS ROW */}
+        
         <div style={{display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))", gap: "20px", marginBottom: "40px"}}>
           <div className="stat-card" style={{background: "var(--bg-card)", padding: "20px", borderRadius: "12px", border: "1px solid var(--border)"}}><h4 style={{margin: 0, color: "#888"}}>TOTAL {userMode==="shopkeeper"?"REVENUE":"SPENT"}</h4><h1 style={{margin: "10px 0", color: "#10b981", fontSize: "32px"}}>₹{totalSpent}</h1></div>
           <div className="stat-card" style={{background: "var(--bg-card)", padding: "20px", borderRadius: "12px", border: "1px solid var(--border)"}}><h4 style={{margin: 0, color: "#888"}}>AVG ORDER VALUE</h4><h1 style={{margin: "10px 0", color: "#3b82f6", fontSize: "32px"}}>₹{avgOrderValue}</h1></div>
@@ -310,13 +294,12 @@ function App() {
 
         <div className="main-grid" style={{gridTemplateColumns: "repeat(auto-fit, minmax(400px, 1fr))", gap: "20px"}}>
           
-          {/* COMMON: REVENUE CHART */}
           <div style={{background: "var(--bg-card)", padding: "20px", borderRadius: "12px", border: "1px solid var(--border)", minHeight: "350px"}}>
              <h3 style={{color: "white", marginTop: 0}}>Daily Financial Trend</h3>
              <ResponsiveContainer width="100%" height={300}><AreaChart data={chartData}><defs><linearGradient id="colorSplit" x1="0" y1="0" x2="0" y2="1"><stop offset="5%" stopColor="#3b82f6" stopOpacity={0.8}/><stop offset="95%" stopColor="#3b82f6" stopOpacity={0}/></linearGradient></defs><XAxis dataKey="name" stroke="#666" /><YAxis stroke="#666" /><CartesianGrid strokeDasharray="3 3" stroke="#333" /><Tooltip contentStyle={{backgroundColor: '#111', border: '1px solid #333', borderRadius: '8px'}} /><Area type="monotone" dataKey="amount" stroke="#3b82f6" fillOpacity={1} fill="url(#colorSplit)" /></AreaChart></ResponsiveContainer>
           </div>
           
-          {/* STUDENT SPECIFIC */}
+          
           {userMode === "student" && (
             <>
              <div style={{background: "var(--bg-card)", padding: "20px", borderRadius: "12px", border: "1px solid var(--border)", minHeight: "350px"}}>
@@ -330,7 +313,7 @@ function App() {
             </>
           )}
 
-          {/* SHOPKEEPER SPECIFIC */}
+         
           {userMode === "shopkeeper" && (
             <>
              <div style={{background: "var(--bg-card)", padding: "20px", borderRadius: "12px", border: "1px solid var(--border)", minHeight: "350px"}}><h3 style={{color: "white", marginTop: 0}}>Peak Traffic Hours</h3><ResponsiveContainer width="100%" height={300}><BarChart data={peakHourData}><CartesianGrid strokeDasharray="3 3" stroke="#333" /><XAxis dataKey="name" stroke="#666" /><YAxis stroke="#666" /><Tooltip contentStyle={{backgroundColor: '#111', border: '1px solid #333'}} /><Bar dataKey="value" fill="#FF8042" radius={[5, 5, 0, 0]} /></BarChart></ResponsiveContainer></div>
@@ -361,7 +344,6 @@ function App() {
         <div style={{display: "grid", gap: "20px"}}>
           {orders.map(o => (
             <div key={o.id} className="history-card">
-              {/* WATERMARK IS CENTERED VIA CSS */}
               <div className="token-watermark">#{o.tokenId}</div>
               <div className="history-content">
                 <div style={{display: "flex", justifyContent: "space-between", marginBottom: "15px"}}>
@@ -383,13 +365,11 @@ function App() {
       <div className="login-page">
         <div className="login-container">
           <div className="login-content">
-            {/* Branding */}
             <div className="login-header">
               <h1 className="login-logo">CAMPUSEATS</h1>
               <p className="login-tagline">{isRegistering ? "Join our community" : "Order from your campus canteen"}</p>
             </div>
 
-            {/* Form */}
             <form onSubmit={isRegistering ? handleSignup : handleLogin} className="login-form">
               {isRegistering && (
                 <>
@@ -420,7 +400,6 @@ function App() {
               <button type="submit" className="btn btn-primary btn-lg" style={{width: "100%"}}>{isRegistering ? "Create Account" : "Sign In"}</button>
             </form>
 
-            {/* Toggle Auth Mode */}
             <div className="auth-toggle">
               <p>{isRegistering ? "Already have an account?" : "Don't have an account?"}</p>
               <button onClick={()=>setIsRegistering(!isRegistering)} className="auth-link">{isRegistering ? "Sign In" : "Register Now"}</button>
@@ -444,12 +423,11 @@ function App() {
             <button onClick={goHome} className={`btn ${currentView==="home"?"btn-primary":"btn-secondary"}`}>Menu</button>
             {userMode === "student" && <button onClick={()=>setCurrentView("account")} className={`btn ${currentView==="account"?"btn-primary":"btn-secondary"}`}>History</button>}
             <button onClick={()=>setCurrentView("stats")} className={`btn ${currentView==="stats"?"btn-primary":"btn-secondary"}`}>Stats</button>
-            <button onClick={handleLogout} className="btn btn-danger" style={{border: "none"}}>Exit</button>
+            <button onClick={handleLogout} className="btn btn-danger" style={{border: "none"}}>Log Out</button>
           </div>
         </div>
       </div>
 
-      {/* --- PERSISTENT ACTIVE ORDER BANNER --- */}
       {userMode === "student" && activeOrder && (
         <div className="active-order-banner" onClick={()=>setCurrentView("account")} style={{cursor:"pointer"}}>
            <span> Order #{activeOrder.tokenId} is <strong>{activeOrder.status.toUpperCase()}</strong></span>
@@ -511,7 +489,6 @@ function App() {
                           })}
                       </div>
                     </div>
-                    {/* DESKTOP CART */}
                     <div className="cart-panel">
                       <h3 style={{marginTop: 0, color: "white"}}>Your Order</h3>
                       {cart.length === 0 ? <p style={{color: "#555"}}>Cart is empty</p> : (
@@ -530,7 +507,6 @@ function App() {
             </>
           )}
 
-          {/* MOBILE CART MODAL */}
           {userMode==="student" && showMobileCart && (
             <div className="mobile-cart-overlay" onClick={()=>setShowMobileCart(false)}>
                <div className="mobile-cart-content" onClick={e=>e.stopPropagation()}>
